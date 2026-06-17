@@ -1,0 +1,200 @@
+.work {
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 3rem);
+  height: 100vh;
+  height: 100dvh;
+  width: max-content;
+  padding-inline: var(--gutter);
+  will-change: transform;
+}
+
+/* Intro panel */
+.intro {
+  flex: 0 0 auto;
+  width: min(78vw, 30rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  height: 100%;
+  padding-block: var(--space-6);
+}
+
+.introTitle {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.hint {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-fg-dim);
+}
+
+/* Cards */
+.card {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(300px, 36vw, 480px);
+  height: min(74vh, 720px);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  transition: transform 0.6s var(--ease-out-expo);
+}
+.card:hover {
+  transform: translateY(-10px);
+}
+
+.cardCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.cardBody {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1.25rem, 2.5vw, 2rem);
+  background: linear-gradient(
+    to top,
+    rgba(8, 8, 8, 0.82) 0%,
+    rgba(8, 8, 8, 0.25) 45%,
+    rgba(8, 8, 8, 0.1) 100%
+  );
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: var(--fs-sm);
+  color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+}
+
+.cardBottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cardTitle {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+
+.cardRole {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-fg-dim);
+}
+
+.cardDesc {
+  font-size: var(--fs-sm);
+  color: rgba(245, 245, 243, 0.82);
+  max-width: 42ch;
+}
+
+.cardStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.cardStack li {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  padding: 0.3em 0.7em;
+  border: 1px solid rgba(245, 245, 243, 0.25);
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+
+.cardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: var(--space-1);
+  font-size: var(--fs-sm);
+  letter-spacing: 0.04em;
+}
+.cardLink span {
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.cardLink:hover span {
+  transform: translate(3px, -3px);
+}
+
+/* End panel */
+.end {
+  flex: 0 0 auto;
+  width: min(40vw, 16rem);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.endIndex {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  letter-spacing: -0.01em;
+  color: var(--color-fg-dim);
+}
+
+/* Horizontal scroll progress indicator (stays fixed while the section is pinned) */
+.progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(1.25rem, 3vw, 2.25rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.progressCount {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.2em;
+  color: var(--color-fg-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.progressTrack {
+  position: relative;
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.progressBar {
+  position: absolute;
+  inset: 0;
+  background: var(--color-fg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}

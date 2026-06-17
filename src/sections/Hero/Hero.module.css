@@ -1,0 +1,85 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-end;
+  padding-block: 9rem var(--space-5);
+}
+
+.inner {
+  width: 100%;
+}
+
+.eyebrow {
+  margin-bottom: var(--space-3);
+}
+
+.title {
+  font-size: clamp(2.5rem, 7.6vw, 8rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+  margin-bottom: var(--space-4);
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.tagline {
+  max-width: 42ch;
+  font-size: var(--fs-lg);
+  color: var(--color-fg);
+}
+
+.scroll {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8em;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-fg-dim);
+  white-space: nowrap;
+}
+
+.scrollLine {
+  position: relative;
+  width: 60px;
+  height: 1px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+.scrollLine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-fg);
+  transform-origin: left center;
+  animation: scrollSlide 2.2s var(--ease-in-out-quart) infinite;
+}
+
+@keyframes scrollSlide {
+  0% {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  45% {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+  55% {
+    transform: scaleX(1);
+    transform-origin: right center;
+  }
+  100% {
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+}

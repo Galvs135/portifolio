@@ -1,0 +1,14 @@
+.text {
+  margin: 0;
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.inner {
+  display: inline-block;
+  will-change: transform;
+}

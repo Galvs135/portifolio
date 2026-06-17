@@ -1,0 +1,104 @@
+.skills {
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 3rem);
+  height: 100vh;
+  height: 100dvh;
+  width: max-content;
+  padding-inline: var(--gutter);
+  will-change: transform;
+}
+
+/* Intro panel */
+.intro {
+  flex: 0 0 auto;
+  width: min(78vw, 30rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-3);
+  height: 100%;
+}
+
+.introTitle {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 9vw, 7rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.hint {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--color-fg-dim);
+}
+
+/* Group cards */
+.group {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(260px, 26vw, 360px);
+  height: min(74vh, 720px);
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-bg-soft);
+}
+
+.groupIndex {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.1em;
+  color: var(--color-fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.groupTitle {
+  margin-top: auto;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-fg-dim);
+  margin-bottom: var(--space-2);
+}
+
+.groupList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.groupList li {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+}
+
+/* End panel */
+.end {
+  flex: 0 0 auto;
+  width: min(60vw, 26rem);
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.endText {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--color-fg-dim);
+}

@@ -1,0 +1,219 @@
+.about {
+  background: var(--color-bg);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-line);
+  margin-bottom: var(--space-5);
+}
+
+.headIndex {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.2em;
+  color: var(--color-fg-dim);
+}
+
+.lead {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--fs-xl);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  max-width: 24ch;
+  margin-bottom: var(--space-6);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+@media (min-width: 860px) {
+  .grid {
+    grid-template-columns: 1.1fr 1fr;
+    gap: var(--space-6);
+  }
+}
+
+.bio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--color-fg-dim);
+  font-size: var(--fs-lg);
+  max-width: 46ch;
+}
+.bio p {
+  line-height: 1.5;
+}
+
+.focus {
+  display: flex;
+  flex-direction: column;
+}
+
+.focusItem {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-line);
+}
+.focusItem:last-child {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.focusKey {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+}
+
+.focusVal {
+  font-size: var(--fs-sm);
+  color: var(--color-fg-dim);
+  text-align: right;
+}
+
+/* Experience — accordion */
+.experience {
+  margin-top: var(--space-6);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.expEyebrow {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+.expItem {
+  border-top: 1px solid var(--color-line);
+}
+
+.expHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  width: 100%;
+  padding-block: var(--space-4);
+  text-align: left;
+  color: var(--color-fg);
+}
+
+.expIdentity {
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+}
+
+.expCompany {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  transition: color 0.35s ease;
+}
+.expHead:hover .expCompany {
+  color: var(--color-fg-dim);
+}
+
+.expRole {
+  font-size: var(--fs-sm);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-fg-dim);
+}
+
+.expMeta {
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.15rem;
+  text-align: right;
+  font-size: var(--fs-sm);
+  color: var(--color-fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 700px) {
+  .expMeta {
+    display: flex;
+  }
+}
+
+/* Plus → minus toggle */
+.expToggle {
+  position: relative;
+  flex: 0 0 auto;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.expToggle::before,
+.expToggle::after {
+  content: "";
+  position: absolute;
+  background: var(--color-fg);
+}
+.expToggle::before {
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  transform: translateY(-50%);
+}
+.expToggle::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1.5px;
+  transform: translateX(-50%);
+  transition: transform 0.45s var(--ease-out-expo);
+}
+[data-open="true"] .expToggle::after {
+  transform: translateX(-50%) scaleY(0);
+}
+
+/* Expanding panel (grid-rows trick) */
+.expPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s var(--ease-in-out-quart);
+}
+[data-open="true"] .expPanel {
+  grid-template-rows: 1fr;
+}
+
+.expPanelInner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.expBullets {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 80ch;
+  padding-bottom: var(--space-4);
+}
+.expBullets li {
+  position: relative;
+  padding-left: 1.4rem;
+  color: var(--color-fg-dim);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+}
+.expBullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--color-fg);
+}
