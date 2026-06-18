@@ -12,13 +12,16 @@ interface Particle {
   size: number;
 }
 
-export default function Cursor() {
+export default function Cursor({ paused = false }: { paused?: boolean }) {
   const [touch] = useState(() => isTouchDevice());
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const orbRef = useRef<HTMLDivElement>(null);
+
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   // --- Touch devices: a soft glow orb that trails the finger -----------------
   useEffect(() => {
@@ -134,7 +137,7 @@ export default function Cursor() {
       const dy = mouse.y - lastY;
       const dist = Math.hypot(dx, dy);
       const count = Math.min(4, Math.floor(dist / 5) + 1);
-      spawn(mouse.x, mouse.y, count);
+      if (!pausedRef.current) spawn(mouse.x, mouse.y, count);
       lastX = mouse.x;
       lastY = mouse.y;
     };
@@ -165,24 +168,29 @@ export default function Cursor() {
       ring.style.transform = `translate3d(${ringPos.x}px, ${ringPos.y}px, 0) scale(${ringScale})`;
 
       ctx.clearRect(0, 0, w, h);
-      ctx.globalCompositeOperation = "lighter";
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.life++;
-        p.x += p.vx;
-        p.y += p.vy;
-        const t = p.life / p.max;
-        if (t >= 1) {
-          particles.splice(i, 1);
-          continue;
+      if (pausedRef.current) {
+        // Terminal open: keep the dot/ring following but stop the trail work.
+        if (particles.length) particles.length = 0;
+      } else {
+        ctx.globalCompositeOperation = "lighter";
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.life++;
+          p.x += p.vx;
+          p.y += p.vy;
+          const t = p.life / p.max;
+          if (t >= 1) {
+            particles.splice(i, 1);
+            continue;
+          }
+          const alpha = (1 - t) * 0.6;
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(245, 245, 243, ${alpha})`;
+          ctx.arc(p.x * dpr, p.y * dpr, p.size * (1 - t) * dpr, 0, Math.PI * 2);
+          ctx.fill();
         }
-        const alpha = (1 - t) * 0.6;
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(245, 245, 243, ${alpha})`;
-        ctx.arc(p.x * dpr, p.y * dpr, p.size * (1 - t) * dpr, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.globalCompositeOperation = "source-over";
       }
-      ctx.globalCompositeOperation = "source-over";
 
       raf = requestAnimationFrame(render);
     };

@@ -5,7 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { commands, type TermLine } from "./commands";
+import { aliases, commands, type TermLine } from "./commands";
 import styles from "./Terminal.module.css";
 
 const PROMPT = "PS C:\\Users\\lucas>";
@@ -17,20 +17,41 @@ interface TerminalProps {
 
 interface Entry {
   id: number;
-  /** Echoed command, or null for system output (banner/help). */
+  /** Echoed command, or null for system output (banner). */
   input: string | null;
   output: ReactNode;
 }
 
 function renderLines(lines: TermLine[]): ReactNode {
   return lines.map((l, i) => (
-    <div
-      key={i}
-      className={`${styles.line} ${l.tone ? styles[l.tone] : ""}`}
-    >
-      {l.text || " "}
+    <div key={i} className={`${styles.line} ${l.tone ? styles[l.tone] : ""}`}>
+      {l.text || " "}
     </div>
   ));
+}
+
+function downloadResume() {
+  const cv = `Lucas Galvão França — Software Engineer
+Belo Horizonte, Brasil
+
+4 anos no ecossistema .NET (C#) construindo backends escaláveis,
+microsserviços e automação. SOLID, Clean Architecture e DDD.
+MBA em IA & Automação.
+
+email: lg_franca@hotmail.com
+github: https://github.com/galvs135
+linkedin: https://www.linkedin.com/in/lucas-g-franca
+
+(CV placeholder — substituir por um PDF real depois.)`;
+  const blob = new Blob([cv], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "Lucas-Galvao-Franca-CV.txt";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default function Terminal({ open, onOpenChange }: TerminalProps) {
@@ -60,50 +81,55 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
           <span className={styles.dim}> — {c.description}</span>
         </div>
       ))}
-      <div className={styles.line}>
-        <button
-          type="button"
-          className={styles.cmdChip}
-          onClick={() => runRef.current("clear")}
-          data-cursor="hover"
-        >
-          clear
-        </button>
-        <span className={styles.dim}> — limpa o terminal</span>
-      </div>
     </div>
   );
 
-  const runCommand = useCallback((raw: string) => {
-    const name = raw.trim().toLowerCase();
-    setInput("");
-    inputRef.current?.focus();
+  const runCommand = useCallback(
+    (raw: string) => {
+      const typed = raw.trim().toLowerCase();
+      const name = aliases[typed] ?? typed;
+      setInput("");
+      inputRef.current?.focus();
 
-    if (name === "clear") {
-      setHistory([]);
-      return;
-    }
+      if (name === "clear") {
+        setHistory([]);
+        return;
+      }
+      if (name === "exit") {
+        onOpenChange(false);
+        return;
+      }
 
-    let output: ReactNode = null;
-    if (name === "") {
-      output = null;
-    } else if (name === "help") {
-      output = buildHelp();
-    } else if (commands[name]) {
-      output = <>{renderLines(commands[name].lines)}</>;
-    } else {
-      output = (
-        <div className={`${styles.line} ${styles.error}`}>
-          comando não reconhecido: "{name}" — digite 'help' para ver as opções.
-        </div>
-      );
-    }
+      let output: ReactNode = null;
+      if (name === "") {
+        output = null;
+      } else if (name === "help") {
+        output = buildHelp();
+      } else if (name === "resume") {
+        downloadResume();
+        output = (
+          <div className={styles.line}>
+            Baixando currículo…{" "}
+            <span className={styles.dim}>(Lucas-Galvao-Franca-CV.txt)</span>
+          </div>
+        );
+      } else if (commands[name]?.lines) {
+        output = <>{renderLines(commands[name].lines!)}</>;
+      } else {
+        output = (
+          <div className={`${styles.line} ${styles.error}`}>
+            comando não reconhecido: "{typed}" — digite 'help'.
+          </div>
+        );
+      }
 
-    setHistory((h) => [...h, { id: nextId(), input: raw, output }]);
-  }, []);
+      setHistory((h) => [...h, { id: nextId(), input: raw, output }]);
+    },
+    [onOpenChange]
+  );
   runRef.current = runCommand;
 
-  // Seed the welcome banner + help the first time it opens; focus input.
+  // Seed only a short banner — no command list up front.
   useEffect(() => {
     if (!open) return;
     inputRef.current?.focus();
@@ -120,12 +146,11 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
                     Windows PowerShell — Lucas G. França
                   </div>
                   <div className={`${styles.line} ${styles.dim}`}>
-                    Digite um comando e Enter, ou clique num comando abaixo.
+                    Digite 'help' para ver os comandos disponíveis.
                   </div>
                 </div>
               ),
             },
-            { id: nextId(), input: null, output: buildHelp() },
           ]
     );
   }, [open]);

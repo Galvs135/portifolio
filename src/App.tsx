@@ -37,9 +37,9 @@ export default function App() {
 
   return (
     <>
-      <Cursor />
+      <Cursor paused={terminalOpen} />
       <Preloader onComplete={handleLoaded} />
-      <Scene paused={activeId !== "hero"} />
+      <Scene paused={activeId !== "hero" || terminalOpen} />
 
       <Fullpage
         panels={panels}
