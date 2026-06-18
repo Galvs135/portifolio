@@ -10,9 +10,13 @@ import styles from "./Terminal.module.css";
 
 const PROMPT = "PS C:\\Users\\lucas>";
 
+export type TerminalView = "terminal" | "site";
+
 interface TerminalProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  view: TerminalView;
+  modalOpen: boolean;
+  onView: (view: TerminalView) => void;
+  onModalOpen: (open: boolean) => void;
 }
 
 interface Entry {
@@ -32,17 +36,17 @@ function renderLines(lines: TermLine[]): ReactNode {
 
 function downloadResume() {
   const cv = `Lucas Galvão França — Software Engineer
-Belo Horizonte, Brasil
+Belo Horizonte, Brazil
 
-4 anos no ecossistema .NET (C#) construindo backends escaláveis,
-microsserviços e automação. SOLID, Clean Architecture e DDD.
-MBA em IA & Automação.
+4 years in the .NET (C#) ecosystem building scalable backends,
+microservices and automation. SOLID, Clean Architecture and DDD.
+MBA in AI & Automation.
 
 email: lg_franca@hotmail.com
 github: https://github.com/galvs135
 linkedin: https://www.linkedin.com/in/lucas-g-franca
 
-(CV placeholder — substituir por um PDF real depois.)`;
+(CV placeholder — replace with a real PDF later.)`;
   const blob = new Blob([cv], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -54,7 +58,15 @@ linkedin: https://www.linkedin.com/in/lucas-g-franca
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export default function Terminal({ open, onOpenChange }: TerminalProps) {
+export default function Terminal({
+  view,
+  modalOpen,
+  onView,
+  onModalOpen,
+}: TerminalProps) {
+  const fullscreen = view === "terminal";
+  const shown = fullscreen || modalOpen;
+
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<Entry[]>([]);
 
@@ -66,7 +78,7 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
 
   const buildHelp = (): ReactNode => (
     <div>
-      <div className={styles.line}>Comandos disponíveis:</div>
+      <div className={styles.line}>Available commands:</div>
       <div className={styles.line}>&nbsp;</div>
       {Object.entries(commands).map(([name, c]) => (
         <div key={name} className={styles.line}>
@@ -91,47 +103,65 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
       setInput("");
       inputRef.current?.focus();
 
-      if (name === "clear") {
-        setHistory([]);
-        return;
-      }
-      if (name === "exit") {
-        onOpenChange(false);
-        return;
-      }
+      const push = (output: ReactNode) =>
+        setHistory((h) => [...h, { id: nextId(), input: raw, output }]);
 
-      let output: ReactNode = null;
-      if (name === "") {
-        output = null;
-      } else if (name === "help") {
-        output = buildHelp();
-      } else if (name === "resume") {
-        downloadResume();
-        output = (
+      // --- side-effect commands ---
+      if (name === "clear") return setHistory([]);
+      if (name === "exit") {
+        push(null);
+        if (view === "terminal") onView("site");
+        else onModalOpen(false);
+        return;
+      }
+      if (name === "site") {
+        push(
           <div className={styles.line}>
-            Baixando currículo…{" "}
+            Loading portfolio…{" "}
+            <span className={styles.dim}>(type 'terminal' to come back)</span>
+          </div>
+        );
+        onModalOpen(false);
+        onView("site");
+        return;
+      }
+      if (name === "terminal") {
+        if (view === "terminal") {
+          push(<div className={styles.line}>Already in the terminal.</div>);
+        } else {
+          push(null);
+          onView("terminal");
+        }
+        return;
+      }
+      if (name === "resume") {
+        downloadResume();
+        push(
+          <div className={styles.line}>
+            Downloading resume…{" "}
             <span className={styles.dim}>(Lucas-Galvao-Franca-CV.txt)</span>
           </div>
         );
-      } else if (commands[name]?.lines) {
-        output = <>{renderLines(commands[name].lines!)}</>;
-      } else {
-        output = (
-          <div className={`${styles.line} ${styles.error}`}>
-            comando não reconhecido: "{typed}" — digite 'help'.
-          </div>
-        );
+        return;
       }
 
-      setHistory((h) => [...h, { id: nextId(), input: raw, output }]);
+      // --- output commands ---
+      if (name === "") return push(null);
+      if (name === "help") return push(buildHelp());
+      if (commands[name]?.lines) return push(<>{renderLines(commands[name].lines!)}</>);
+      push(
+        <div className={`${styles.line} ${styles.error}`}>
+          command not recognized: "{typed}" — type 'help'.
+        </div>
+      );
     },
-    [onOpenChange]
+    [view, onView, onModalOpen]
   );
   runRef.current = runCommand;
 
-  // Seed only a short banner — no command list up front.
+  // Seed the banner once the console is shown; focus the input.
   useEffect(() => {
-    if (!open) return;
+    if (!shown) return;
     inputRef.current?.focus();
     setHistory((h) =>
       h.length
@@ -146,24 +176,24 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
                     Windows PowerShell — Lucas G. França
                   </div>
                   <div className={`${styles.line} ${styles.dim}`}>
-                    Digite 'help' para ver os comandos disponíveis.
+                    Type 'help' to list the available commands.
                   </div>
                 </div>
               ),
             },
           ]
     );
-  }, [open]);
+  }, [shown]);
 
-  // Esc closes.
+  // Esc closes the modal (only meaningful over the site).
   useEffect(() => {
-    if (!open) return;
+    if (!modalOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onOpenChange(false);
+      if (e.key === "Escape") onModalOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onOpenChange]);
+  }, [modalOpen, onModalOpen]);
 
   // Auto-scroll to the latest output.
   useEffect(() => {
@@ -171,15 +201,66 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
     if (el) el.scrollTop = el.scrollHeight;
   }, [history]);
 
+  const consoleBody = (
+    <div className={styles.body} ref={outputRef}>
+      {history.map((e) => (
+        <div key={e.id} className={styles.entry}>
+          {e.input != null && (
+            <div className={styles.promptLine}>
+              <span className={styles.prompt}>{PROMPT}</span>
+              <span className={styles.cmdEcho}>{e.input}</span>
+            </div>
+          )}
+          {e.output}
+        </div>
+      ))}
+
+      <div
+        className={styles.inputLine}
+        onClick={() => inputRef.current?.focus()}
+      >
+        <span className={styles.prompt}>{PROMPT}</span>
+        <span className={styles.inputText}>{input}</span>
+        <span className={styles.caret} aria-hidden="true" />
+        <input
+          ref={inputRef}
+          className={styles.hiddenInput}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              runCommand(input);
+            }
+          }}
+          spellCheck={false}
+          autoComplete="off"
+          autoCapitalize="off"
+          aria-label="Terminal input"
+        />
+      </div>
+    </div>
+  );
+
+  // Full-screen terminal: edge-to-edge, no chrome.
+  if (fullscreen) {
+    return (
+      <div className={styles.fullscreen} role="dialog" aria-label="Terminal">
+        {consoleBody}
+      </div>
+    );
+  }
+
+  // Site view: floating button + modal window.
   return (
     <>
-      {!open && (
+      {!modalOpen && (
         <button
           type="button"
           className={styles.fab}
-          onClick={() => onOpenChange(true)}
+          onClick={() => onModalOpen(true)}
           data-cursor="hover"
-          aria-label="Abrir terminal"
+          aria-label="Open terminal"
         >
           <svg
             viewBox="0 0 24 24"
@@ -197,10 +278,10 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
         </button>
       )}
 
-      {open && (
+      {modalOpen && (
         <div
           className={styles.backdrop}
-          onClick={() => onOpenChange(false)}
+          onClick={() => onModalOpen(false)}
           role="presentation"
         >
           <div
@@ -221,53 +302,16 @@ export default function Terminal({ open, onOpenChange }: TerminalProps) {
                 <button
                   type="button"
                   className={`${styles.ctl} ${styles.close}`}
-                  onClick={() => onOpenChange(false)}
+                  onClick={() => onModalOpen(false)}
                   data-cursor="hover"
-                  aria-label="Fechar terminal"
+                  aria-label="Close terminal"
                 >
                   &#10005;
                 </button>
               </div>
             </div>
 
-            <div className={styles.body} ref={outputRef}>
-              {history.map((e) => (
-                <div key={e.id} className={styles.entry}>
-                  {e.input != null && (
-                    <div className={styles.promptLine}>
-                      <span className={styles.prompt}>{PROMPT}</span>
-                      <span className={styles.cmdEcho}>{e.input}</span>
-                    </div>
-                  )}
-                  {e.output}
-                </div>
-              ))}
-
-              <div
-                className={styles.inputLine}
-                onClick={() => inputRef.current?.focus()}
-              >
-                <span className={styles.prompt}>{PROMPT}</span>
-                <span className={styles.inputText}>{input}</span>
-                <span className={styles.caret} aria-hidden="true" />
-                <input
-                  ref={inputRef}
-                  className={styles.hiddenInput}
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      runCommand(input);
-                    }
-                  }}
-                  spellCheck={false}
-                  autoComplete="off"
-                  autoCapitalize="off"
-                  aria-label="Terminal input"
-                />
-              </div>
-            </div>
+            {consoleBody}
           </div>
         </div>
       )}

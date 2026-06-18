@@ -10,6 +10,10 @@ interface PreloaderProps {
 
 const COLUMNS = 5;
 
+// First `site` load gets the full count; later re-entries are quick
+// (assets are already cached, so don't make the user wait again).
+let firstBoot = true;
+
 export default function Preloader({ onComplete }: PreloaderProps) {
   const { active } = useProgress();
   const activeRef = useRef(active);
@@ -26,6 +30,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
   useEffect(() => {
     const counter = { v: 0 };
+    const dur = firstBoot ? 2 : 0.4;
+    firstBoot = false;
 
     const paint = () => {
       const v = Math.round(counter.v);
@@ -69,7 +75,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
     const count = gsap.to(counter, {
       v: 100,
-      duration: 2,
+      duration: dur,
       ease: "power2.inOut",
       onUpdate: paint,
       onComplete: () => {

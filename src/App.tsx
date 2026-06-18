@@ -1,58 +1,29 @@
-import { useCallback, useMemo, useState } from "react";
-import Scene from "./three/Scene";
+import { Suspense, lazy, useState } from "react";
 import Cursor from "./components/Cursor/Cursor";
-import Preloader from "./components/Preloader/Preloader";
-import Fullpage, { type PanelDef } from "./components/Fullpage/Fullpage";
-import Navbar from "./components/Navbar/Navbar";
-import Menu from "./components/Menu/Menu";
-import Terminal from "./components/Terminal/Terminal";
-import Hero from "./sections/Hero/Hero";
-import About from "./sections/About/About";
-import Pillars from "./sections/Pillars/Pillars";
-import Work from "./sections/Work/Work";
-import Skills from "./sections/Skills/Skills";
-import Contact from "./sections/Contact/Contact";
+import Terminal, { type TerminalView } from "./components/Terminal/Terminal";
+
+const Portfolio = lazy(() => import("./Portfolio"));
 
 export default function App() {
-  const [loaded, setLoaded] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [terminalOpen, setTerminalOpen] = useState(false);
-  const [activeId, setActiveId] = useState("hero");
-
-  const handleLoaded = useCallback(() => setLoaded(true), []);
-  const toggleMenu = useCallback(() => setMenuOpen((o) => !o), []);
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
-
-  const panels: PanelDef[] = useMemo(
-    () => [
-      { id: "hero", kind: "simple", transparent: true, node: <Hero loaded={loaded} /> },
-      { id: "about", kind: "scroll", node: <About /> },
-      { id: "pillars", kind: "scroll", node: <Pillars /> },
-      { id: "work", kind: "horizontal", node: <Work /> },
-      { id: "skills", kind: "horizontal", node: <Skills /> },
-      { id: "contact", kind: "scroll", node: <Contact /> },
-    ],
-    [loaded]
-  );
+  const [view, setView] = useState<TerminalView>("terminal");
+  const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <>
-      <Cursor paused={terminalOpen} />
-      <Preloader onComplete={handleLoaded} />
-      <Scene paused={activeId !== "hero" || terminalOpen} />
+      <Cursor paused={view === "terminal" || modalOpen} />
 
-      <Fullpage
-        panels={panels}
-        loaded={loaded}
-        menuOpen={menuOpen}
-        terminalOpen={terminalOpen}
-        onActiveChange={setActiveId}
-      >
-        <Navbar open={menuOpen} onToggle={toggleMenu} />
-        <Menu open={menuOpen} onClose={closeMenu} />
-      </Fullpage>
+      <Terminal
+        view={view}
+        modalOpen={modalOpen}
+        onView={setView}
+        onModalOpen={setModalOpen}
+      />
 
-      <Terminal open={terminalOpen} onOpenChange={setTerminalOpen} />
+      {view === "site" && (
+        <Suspense fallback={null}>
+          <Portfolio terminalOpen={modalOpen} />
+        </Suspense>
+      )}
     </>
   );
 }

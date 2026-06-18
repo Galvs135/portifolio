@@ -8,13 +8,13 @@ export interface TermLine {
   tone?: Tone;
 }
 
-export type CommandAction = "clear" | "exit" | "resume";
+export type CommandAction = "clear" | "exit" | "resume" | "site" | "terminal";
 
 export interface Command {
   description: string;
   /** Static output (data commands). */
   lines?: TermLine[];
-  /** Side-effect commands handled by the Terminal (clear/exit/download). */
+  /** Side-effect commands handled by the Terminal. */
   action?: CommandAction;
 }
 
@@ -28,20 +28,20 @@ const link = (s: { label: string; href: string }): TermLine => ({
  */
 export const commands: Record<string, Command> = {
   about: {
-    description: "Fala sobre mim",
+    description: "Who I am and what I do",
     lines: [
       { text: "Lucas Galvão França — Software Engineer", tone: "accent" },
-      { text: "Belo Horizonte, Brasil", tone: "dim" },
+      { text: "Belo Horizonte, Brazil", tone: "dim" },
       { text: "" },
-      { text: "4 anos no ecossistema .NET (C#) construindo backends" },
-      { text: "escaláveis, microsserviços e automação — da ideia à produção." },
-      { text: "SOLID, Clean Architecture e DDD. MBA em IA & Automação." },
+      { text: "4 years in the .NET (C#) ecosystem building scalable" },
+      { text: "backends, microservices and automation — idea to production." },
+      { text: "SOLID, Clean Architecture and DDD. MBA in AI & Automation.", tone: "dim" },
     ],
   },
   contact: {
-    description: "Meus contatos",
+    description: "Ways to reach me",
     lines: [
-      { text: "Vamos conversar:", tone: "accent" },
+      { text: "Let's talk:", tone: "accent" },
       { text: "" },
       { text: `email      ${EMAIL}` },
       { text: `whatsapp   ${PHONE_DISPLAY}` },
@@ -51,34 +51,34 @@ export const commands: Record<string, Command> = {
     ],
   },
   works: {
-    description: "Minhas tarefas na Capys IT",
+    description: "My work at Capys IT",
     lines: [
-      { text: "Capys IT — Software Engineer (03/2023 — atual)", tone: "accent" },
+      { text: "Capys IT — Software Engineer (03/2023 — present)", tone: "accent" },
       { text: "" },
-      { text: "• Microsserviço de notificações em tempo real (C#/.NET) —" },
-      { text: "  automação de relatórios e alertas, -70% de monitoramento manual.", tone: "dim" },
-      { text: "• Análise conversacional com IA no WhatsApp (RAG, embeddings," },
-      { text: "  Gemini) — -40% no tempo de atendimento.", tone: "dim" },
-      { text: "• SSO com AWS Cognito (OAuth 2.0 / OpenID Connect)." },
-      { text: "• Pipelines CI/CD no Azure DevOps — deploys ~60% mais rápidos." },
-      { text: "• Integração de pagamentos (Granito, Banco Inter)." },
-      { text: "• Modernização de engine legado .NET 4.8 → .NET 8 —" },
-      { text: "  execução de 48 → 17 min (-65%).", tone: "dim" },
+      { text: "• Real-time CRM notification microservice (C#/.NET) —" },
+      { text: "  automated reports and alerts, -70% manual monitoring.", tone: "dim" },
+      { text: "• AI conversational analysis on WhatsApp (RAG, embeddings," },
+      { text: "  Gemini) — -40% response-handling time.", tone: "dim" },
+      { text: "• SSO with AWS Cognito (OAuth 2.0 / OpenID Connect)." },
+      { text: "• CI/CD pipelines on Azure DevOps — ~60% faster deploys." },
+      { text: "• Card payments integration (Granito, Banco Inter)." },
+      { text: "• Legacy engine modernization .NET 4.8 → .NET 8 —" },
+      { text: "  runtime from 48 → 17 min (-65%).", tone: "dim" },
     ],
   },
   projects: {
-    description: "Meus repositórios",
+    description: "My repositories",
     lines: [
-      { text: "Repositórios:", tone: "accent" },
+      { text: "Repositories:", tone: "accent" },
       { text: "" },
       ...projects.flatMap((p): TermLine[] => [
         { text: `${p.title}  (${p.year})` },
-        { text: `  ${p.href ?? "repositório privado"}`, tone: "dim" },
+        { text: `  ${p.href ?? "private repository"}`, tone: "dim" },
       ]),
     ],
   },
   skill: {
-    description: "Minhas skills",
+    description: "My skills",
     lines: [
       { text: "Skills:", tone: "accent" },
       { text: "" },
@@ -89,20 +89,28 @@ export const commands: Record<string, Command> = {
       { text: "Practices   SOLID · Clean Code · CI/CD · Scrum" },
     ],
   },
+  site: {
+    description: "Load the full portfolio site",
+    action: "site",
+  },
+  terminal: {
+    description: "Back to the full-screen terminal",
+    action: "terminal",
+  },
   resume: {
-    description: "Baixa meu currículo (CV)",
+    description: "Download my resume (CV)",
     action: "resume",
   },
   clear: {
-    description: "Limpa o terminal (ou cls)",
+    description: "Clear the terminal (or cls)",
     action: "clear",
   },
   exit: {
-    description: "Fecha o terminal",
+    description: "Leave the terminal",
     action: "exit",
   },
   help: {
-    description: "Lista todos os comandos",
+    description: "List all commands",
   },
 };
 

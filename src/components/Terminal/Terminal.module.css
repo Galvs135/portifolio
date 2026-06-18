@@ -42,6 +42,21 @@
   animation: fade 0.25s ease;
 }
 
+/* ---- Full-screen terminal (the home view): edge-to-edge, no chrome ---- */
+.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-terminal);
+  background: #0c0c0c;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-mono);
+}
+.fullscreen .body {
+  font-size: clamp(0.82rem, 0.78rem + 0.3vw, 0.95rem);
+  padding: clamp(1.1rem, 4vw, 3rem);
+}
+
 .window {
   display: flex;
   flex-direction: column;
