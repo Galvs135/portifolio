@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "../../lib/gsap";
 import { useTransition } from "../../components/Fullpage/Fullpage";
+import { useT } from "../../i18n/LanguageContext";
 import styles from "./Hero.module.css";
 
 interface HeroProps {
@@ -11,6 +12,7 @@ interface HeroProps {
 export default function Hero({ loaded }: HeroProps) {
   const rootRef = useRef<HTMLElement>(null);
   const { navigate } = useTransition();
+  const { t } = useT();
 
   useEffect(() => {
     if (!loaded) return;
@@ -41,22 +43,24 @@ export default function Hero({ loaded }: HeroProps) {
     <section ref={rootRef} className={styles.hero}>
       <div className={`container ${styles.inner}`}>
         <p data-fade className={`eyebrow ${styles.eyebrow}`}>
-          Lucas Galvão França — Software Engineer
+          Lucas Galvão França — {t("Software Engineer", "Engenheiro de Software")}
         </p>
 
         <h1 className={styles.title}>
           <span className="reveal-line">
-            <span>Software that scales.</span>
+            <span>{t("Software that scales.", "Software que escala.")}</span>
           </span>
           <span className="reveal-line">
-            <span>Systems that last.</span>
+            <span>{t("Systems that last.", "Sistemas que duram.")}</span>
           </span>
         </h1>
 
         <div className={styles.bottom}>
           <p data-fade className={styles.tagline}>
-            Four years engineering scalable backends, microservices and
-            automation in the .NET ecosystem — from first idea to production.
+            {t(
+              "Four years engineering scalable backends, microservices and automation in the .NET ecosystem — from first idea to production.",
+              "Quatro anos desenvolvendo backends escaláveis, microsserviços e automação no ecossistema .NET — da primeira ideia à produção."
+            )}
           </p>
 
           <a
@@ -69,7 +73,7 @@ export default function Hero({ loaded }: HeroProps) {
               navigate("#about");
             }}
           >
-            <span>Scroll to explore</span>
+            <span>{t("Scroll to explore", "Role para explorar")}</span>
             <span className={styles.scrollLine} aria-hidden="true" />
           </a>
         </div>

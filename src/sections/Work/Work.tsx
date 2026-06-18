@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { projects, type Project } from "../../data/projects";
 import WorkPreview from "../../three/WorkPreview";
+import { useT } from "../../i18n/LanguageContext";
 import styles from "./Work.module.css";
 
 function Card({ p, i }: { p: Project; i: number }) {
   const [hover, setHover] = useState(false);
+  const { t, lang } = useT();
   return (
     <article
       data-hstep
@@ -25,8 +27,8 @@ function Card({ p, i }: { p: Project; i: number }) {
 
         <div className={styles.cardBottom}>
           <h3 className={styles.cardTitle}>{p.title}</h3>
-          <span className={styles.cardRole}>{p.role}</span>
-          <p className={styles.cardDesc}>{p.description}</p>
+          <span className={styles.cardRole}>{p.role[lang]}</span>
+          <p className={styles.cardDesc}>{p.description[lang]}</p>
           <ul className={styles.cardStack}>
             {p.stack.map((s) => (
               <li key={s}>{s}</li>
@@ -40,7 +42,7 @@ function Card({ p, i }: { p: Project; i: number }) {
               rel="noreferrer"
               data-cursor="hover"
             >
-              View project <span aria-hidden="true">↗</span>
+              {t("View project", "Ver projeto")} <span aria-hidden="true">↗</span>
             </a>
           )}
         </div>
@@ -50,19 +52,20 @@ function Card({ p, i }: { p: Project; i: number }) {
 }
 
 export default function Work() {
+  const { t } = useT();
   const total = projects.length;
   return (
     <>
       <div data-track className={styles.track}>
         <div data-hstep className={styles.intro}>
-          <span className="eyebrow">(Selected work)</span>
+          <span className="eyebrow">{t("(Selected work)", "(Trabalhos selecionados)")}</span>
           <h2 className={styles.introTitle}>
-            Selected
+            {t("Selected", "Trabalhos")}
             <br />
-            work
+            {t("work", "selecionados")}
           </h2>
           <span className={styles.hint}>
-            Scroll <span aria-hidden="true">→</span>
+            {t("Scroll", "Role")} <span aria-hidden="true">→</span>
           </span>
         </div>
 
@@ -71,7 +74,7 @@ export default function Work() {
         ))}
 
         <div data-hstep className={styles.end}>
-          <span className={styles.endIndex}>Let's talk →</span>
+          <span className={styles.endIndex}>{t("Let's talk →", "Vamos conversar →")}</span>
         </div>
       </div>
 

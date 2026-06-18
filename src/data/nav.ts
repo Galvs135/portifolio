@@ -1,13 +1,13 @@
 export interface NavItem {
-  label: string;
+  label: { en: string; pt: string };
   target: string;
   index: string;
 }
 
 export const navItems: NavItem[] = [
-  { label: "Home", target: "#hero", index: "01" },
-  { label: "About", target: "#about", index: "02" },
-  { label: "Work", target: "#work", index: "03" },
-  { label: "Skills", target: "#skills", index: "04" },
-  { label: "Contact", target: "#contact", index: "05" },
+  { label: { en: "Home", pt: "Início" }, target: "#hero", index: "01" },
+  { label: { en: "About", pt: "Sobre" }, target: "#about", index: "02" },
+  { label: { en: "Work", pt: "Trabalhos" }, target: "#work", index: "03" },
+  { label: { en: "Skills", pt: "Skills" }, target: "#skills", index: "04" },
+  { label: { en: "Contact", pt: "Contato" }, target: "#contact", index: "05" },
 ];

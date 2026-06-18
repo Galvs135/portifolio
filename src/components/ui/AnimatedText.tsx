@@ -43,7 +43,7 @@ export default function AnimatedText({
     } else {
       gsap.set(words, { yPercent: 115, overwrite: true });
     }
-  }, [active, delay, stagger]);
+  }, [active, delay, stagger, text]);
 
   const words = text.split(" ");
 

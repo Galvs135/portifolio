@@ -3,17 +3,19 @@ import MagneticButton from "../../components/ui/MagneticButton";
 import SocialIcon from "../../components/ui/SocialIcon";
 import Parallax from "../../components/ui/Parallax";
 import { useTransition } from "../../components/Fullpage/Fullpage";
+import { useT } from "../../i18n/LanguageContext";
 import { EMAIL, socials } from "../../data/socials";
 import styles from "./Contact.module.css";
 
 export default function Contact() {
   const { navigate } = useTransition();
+  const { t } = useT();
 
   return (
     <footer className={styles.contact}>
       <div className="container">
         <header data-vstep className={styles.head}>
-          <span className="eyebrow">(Contact)</span>
+          <span className="eyebrow">{t("(Contact)", "(Contato)")}</span>
           <span className={styles.headIndex}>05 — 05</span>
         </header>
 
@@ -21,7 +23,10 @@ export default function Contact() {
           <AnimatedText
             as="h2"
             className={styles.title}
-            text="Let's build something worth shipping."
+            text={t(
+              "Let's build something worth shipping.",
+              "Vamos construir algo que valha a pena entregar."
+            )}
             stagger={0.04}
           />
         </Parallax>
@@ -35,8 +40,10 @@ export default function Contact() {
             {EMAIL}
           </MagneticButton>
           <p className={styles.ctaNote}>
-            Available for freelance, contract and full-time roles — remote
-            worldwide.
+            {t(
+              "Available for freelance, contract and full-time roles — remote worldwide.",
+              "Disponível para freelance, contrato e vagas full-time — remoto no mundo todo."
+            )}
           </p>
         </div>
 
@@ -62,7 +69,7 @@ export default function Contact() {
         <div className={styles.footer}>
           <span>© {new Date().getFullYear()} Lucas Galvão França</span>
           <span className={styles.built}>
-            Built with React, Three.js &amp; GSAP
+            {t("Built with", "Feito com")} React, Three.js &amp; GSAP
           </span>
           <button
             type="button"
@@ -70,7 +77,7 @@ export default function Contact() {
             data-cursor="hover"
             onClick={() => navigate("#hero")}
           >
-            Back to top ↑
+            {t("Back to top ↑", "Voltar ao topo ↑")}
           </button>
         </div>
       </div>

@@ -1,33 +1,35 @@
+import { useT } from "../../i18n/LanguageContext";
 import styles from "./Skills.module.css";
 
-const groups = [
-  { title: "Languages", items: ["TypeScript", "C#", "JavaScript", "SQL"] },
-  { title: "Backend", items: ["Node.js", ".NET", "REST APIs", "RabbitMQ"] },
-  { title: "Frontend", items: ["React", "Three.js", "GSAP", "HTML / CSS"] },
-  { title: "Data", items: ["PostgreSQL", "MongoDB", "Observability"] },
-  { title: "Practices", items: ["SOLID", "Clean Code", "CI/CD", "Scrum"] },
+const groups: { title: { en: string; pt: string }; items: string[] }[] = [
+  { title: { en: "Languages", pt: "Linguagens" }, items: ["TypeScript", "C#", "JavaScript", "SQL"] },
+  { title: { en: "Backend", pt: "Backend" }, items: ["Node.js", ".NET", "REST APIs", "RabbitMQ"] },
+  { title: { en: "Frontend", pt: "Frontend" }, items: ["React", "Three.js", "GSAP", "HTML / CSS"] },
+  { title: { en: "Data", pt: "Dados" }, items: ["PostgreSQL", "MongoDB", "Observability"] },
+  { title: { en: "Practices", pt: "Práticas" }, items: ["SOLID", "Clean Code", "CI/CD", "Scrum"] },
 ];
 
 export default function Skills() {
+  const { t, lang } = useT();
   return (
     <>
       <div data-track className={styles.track}>
         <div data-hstep className={styles.intro}>
-          <span className="eyebrow">(Capabilities)</span>
+          <span className="eyebrow">{t("(Capabilities)", "(Capacidades)")}</span>
           <h2 className={styles.introTitle}>
-            A full-stack
+            {t("A full-stack", "Um kit")}
             <br />
-            toolkit
+            {t("toolkit", "full-stack")}
           </h2>
           <span className={styles.hint}>
-            Scroll <span aria-hidden="true">→</span>
+            {t("Scroll", "Role")} <span aria-hidden="true">→</span>
           </span>
         </div>
 
         {groups.map((g, i) => (
-          <div key={g.title} data-hstep data-card className={styles.group}>
+          <div key={g.title.en} data-hstep data-card className={styles.group}>
             <span className={styles.groupIndex}>0{i + 1}</span>
-            <h3 className={styles.groupTitle}>{g.title}</h3>
+            <h3 className={styles.groupTitle}>{g.title[lang]}</h3>
             <ul className={styles.groupList}>
               {g.items.map((it) => (
                 <li key={it}>{it}</li>
@@ -38,9 +40,9 @@ export default function Skills() {
 
         <div data-hstep className={styles.end}>
           <span className={styles.endText}>
-            Always
+            {t("Always", "Sempre")}
             <br />
-            learning.
+            {t("learning.", "aprendendo.")}
           </span>
         </div>
       </div>

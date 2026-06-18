@@ -5,10 +5,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { aliases, commands, type TermLine } from "./commands";
+import { aliases, getCommands, type TermLine } from "./commands";
+import { useLang, type Lang } from "../../i18n/LanguageContext";
 import styles from "./Terminal.module.css";
 
 const PROMPT = "PS C:\\Users\\lucas>";
+const RESUME_FILE = "Lucas_Galvao_Resume_English.pdf";
 
 export type TerminalView = "terminal" | "site";
 
@@ -34,8 +36,6 @@ function renderLines(lines: TermLine[]): ReactNode {
   ));
 }
 
-const RESUME_FILE = "Lucas_Galvao_Resume_English.pdf";
-
 function downloadResume() {
   const a = document.createElement("a");
   a.href = `/${RESUME_FILE}`;
@@ -51,6 +51,7 @@ export default function Terminal({
   onView,
   onModalOpen,
 }: TerminalProps) {
+  const { lang, setLang } = useLang();
   const fullscreen = view === "terminal";
   const shown = fullscreen || modalOpen;
 
@@ -63,30 +64,37 @@ export default function Terminal({
   const runRef = useRef<(raw: string) => void>(() => {});
   const nextId = () => ++idRef.current;
 
-  const buildHelp = (): ReactNode => (
-    <div>
-      <div className={styles.line}>Available commands:</div>
-      <div className={styles.line}>&nbsp;</div>
-      {Object.entries(commands).map(([name, c]) => (
-        <div key={name} className={styles.line}>
-          <button
-            type="button"
-            className={styles.cmdChip}
-            onClick={() => runRef.current(name)}
-            data-cursor="hover"
-          >
-            {name}
-          </button>
-          <span className={styles.dim}> — {c.description}</span>
+  const buildHelp = (lng: Lang): ReactNode => {
+    const cmds = getCommands(lng);
+    return (
+      <div>
+        <div className={styles.line}>
+          {lng === "pt" ? "Comandos disponíveis:" : "Available commands:"}
         </div>
-      ))}
-    </div>
-  );
+        <div className={styles.line}>&nbsp;</div>
+        {Object.entries(cmds).map(([name, c]) => (
+          <div key={name} className={styles.line}>
+            <button
+              type="button"
+              className={styles.cmdChip}
+              onClick={() => runRef.current(name)}
+              data-cursor="hover"
+            >
+              {name}
+            </button>
+            <span className={styles.dim}> — {c.description}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const runCommand = useCallback(
     (raw: string) => {
+      const pick = (en: string, pt: string) => (lang === "pt" ? pt : en);
       const typed = raw.trim().toLowerCase();
       const name = aliases[typed] ?? typed;
+      const cmds = getCommands(lang);
       setInput("");
       inputRef.current?.focus();
 
@@ -104,8 +112,10 @@ export default function Terminal({
       if (name === "site") {
         push(
           <div className={styles.line}>
-            Loading portfolio…{" "}
-            <span className={styles.dim}>(type 'terminal' to come back)</span>
+            {pick("Loading portfolio…", "Carregando portfólio…")}{" "}
+            <span className={styles.dim}>
+              {pick("(type 'terminal' to come back)", "(digite 'terminal' para voltar)")}
+            </span>
           </div>
         );
         onModalOpen(false);
@@ -114,18 +124,32 @@ export default function Terminal({
       }
       if (name === "terminal") {
         if (view === "terminal") {
-          push(<div className={styles.line}>Already in the terminal.</div>);
+          push(
+            <div className={styles.line}>
+              {pick("Already in the terminal.", "Você já está no terminal.")}
+            </div>
+          );
         } else {
           push(null);
           onView("terminal");
         }
         return;
       }
+      if (name === "ptbr") {
+        setLang("pt");
+        push(<div className={styles.line}>Idioma alterado para Português (BR).</div>);
+        return;
+      }
+      if (name === "en") {
+        setLang("en");
+        push(<div className={styles.line}>Language switched to English.</div>);
+        return;
+      }
       if (name === "resume") {
         downloadResume();
         push(
           <div className={styles.line}>
-            Downloading resume…{" "}
+            {pick("Downloading resume…", "Baixando currículo…")}{" "}
             <span className={styles.dim}>({RESUME_FILE})</span>
           </div>
         );
@@ -134,15 +158,16 @@ export default function Terminal({
 
       // --- output commands ---
       if (name === "") return push(null);
-      if (name === "help") return push(buildHelp());
-      if (commands[name]?.lines) return push(<>{renderLines(commands[name].lines!)}</>);
+      if (name === "help") return push(buildHelp(lang));
+      if (cmds[name]?.lines) return push(<>{renderLines(cmds[name].lines!)}</>);
       push(
         <div className={`${styles.line} ${styles.error}`}>
-          command not recognized: "{typed}" — type 'help'.
+          {pick("command not recognized", "comando não reconhecido")}: "{typed}" —{" "}
+          {pick("type 'help'.", "digite 'help'.")}
         </div>
       );
     },
-    [view, onView, onModalOpen]
+    [lang, setLang, view, onView, onModalOpen]
   );
   runRef.current = runCommand;
 
@@ -170,14 +195,16 @@ export default function Terminal({
                     Windows PowerShell — Lucas G. França
                   </div>
                   <div className={`${styles.line} ${styles.dim}`}>
-                    Type 'help' to list the available commands.
+                    {lang === "pt"
+                      ? "Digite 'help' para listar os comandos disponíveis."
+                      : "Type 'help' to list the available commands."}
                   </div>
                 </div>
               ),
             },
           ]
     );
-  }, [shown]);
+  }, [shown, lang]);
 
   // Esc closes the modal (only meaningful over the site).
   useEffect(() => {

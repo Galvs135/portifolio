@@ -3,6 +3,7 @@ import { gsap } from "../../lib/gsap";
 import { navItems } from "../../data/nav";
 import { socials } from "../../data/socials";
 import { useTransition } from "../Fullpage/Fullpage";
+import { useLang } from "../../i18n/LanguageContext";
 import styles from "./Menu.module.css";
 
 interface MenuProps {
@@ -14,6 +15,8 @@ export default function Menu({ open, onClose }: MenuProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const first = useRef(true);
   const { navigate } = useTransition();
+  const { lang } = useLang();
+  const t = (en: string, pt: string) => (lang === "pt" ? pt : en);
 
   // Animate open/close.
   useEffect(() => {
@@ -99,7 +102,7 @@ export default function Menu({ open, onClose }: MenuProps) {
             >
               <span data-link-inner className={styles.linkInner}>
                 <span className={styles.index}>{item.index}</span>
-                {item.label}
+                {item.label[lang]}
               </span>
             </a>
           </li>
@@ -108,7 +111,7 @@ export default function Menu({ open, onClose }: MenuProps) {
 
       <div className={styles.footer}>
         <div data-meta className={styles.metaGroup}>
-          <span className={styles.metaLabel}>Get in touch</span>
+          <span className={styles.metaLabel}>{t("Get in touch", "Fale comigo")}</span>
           <div className={styles.socials}>
             {socials.map((s) => (
               <a
@@ -125,7 +128,10 @@ export default function Menu({ open, onClose }: MenuProps) {
           </div>
         </div>
         <span data-meta className={styles.metaNote}>
-          Based in Belo Horizonte, Brazil — open to remote work worldwide.
+          {t(
+            "Based in Belo Horizonte, Brazil — open to remote work worldwide.",
+            "Em Belo Horizonte, Brasil — aberto a trabalho remoto no mundo todo."
+          )}
         </span>
       </div>
     </nav>
