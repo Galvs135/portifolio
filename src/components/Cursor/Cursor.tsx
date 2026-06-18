@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { isTouchDevice } from "../../lib/device";
 import styles from "./Cursor.module.css";
 
 interface Particle {
@@ -12,11 +13,74 @@ interface Particle {
 }
 
 export default function Cursor() {
+  const [touch] = useState(() => isTouchDevice());
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const orbRef = useRef<HTMLDivElement>(null);
 
+  // --- Touch devices: a soft glow orb that trails the finger -----------------
   useEffect(() => {
+    if (!touch) return;
+    const orb = orbRef.current;
+    if (!orb) return;
+
+    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const pos = { ...target };
+    let hideTimer = 0;
+
+    const show = () => {
+      orb.style.opacity = "1";
+      window.clearTimeout(hideTimer);
+    };
+    const onStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (!t) return;
+      target.x = t.clientX;
+      target.y = t.clientY;
+      pos.x = t.clientX;
+      pos.y = t.clientY;
+      show();
+    };
+    const onMove = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (!t) return;
+      target.x = t.clientX;
+      target.y = t.clientY;
+      show();
+    };
+    const onEnd = () => {
+      hideTimer = window.setTimeout(() => {
+        orb.style.opacity = "0";
+      }, 500);
+    };
+
+    let raf = 0;
+    const render = () => {
+      pos.x += (target.x - pos.x) * 0.15;
+      pos.y += (target.y - pos.y) * 0.15;
+      orb.style.transform = `translate3d(${pos.x}px, ${pos.y}px, 0)`;
+      raf = requestAnimationFrame(render);
+    };
+    raf = requestAnimationFrame(render);
+
+    window.addEventListener("touchstart", onStart, { passive: true });
+    window.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("touchend", onEnd, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(hideTimer);
+      window.removeEventListener("touchstart", onStart);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onEnd);
+    };
+  }, [touch]);
+
+  // --- Pointer devices: custom cursor + particle trail -----------------------
+  useEffect(() => {
+    if (touch) return;
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     const dot = dotRef.current!;
@@ -141,7 +205,11 @@ export default function Cursor() {
       window.removeEventListener("resize", onResize);
       document.body.classList.remove("custom-cursor");
     };
-  }, []);
+  }, [touch]);
+
+  if (touch) {
+    return <div ref={orbRef} className={styles.orb} aria-hidden="true" />;
+  }
 
   return (
     <>

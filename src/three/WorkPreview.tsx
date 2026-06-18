@@ -2,10 +2,8 @@ import { useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { usePanel } from "../components/Fullpage/PanelContext";
+import { isTouchDevice } from "../lib/device";
 import { previewFragmentShader, previewVertexShader } from "./shaders";
-
-const isTouchDevice = () =>
-  typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
 interface PreviewProps {
   colors: [string, string];

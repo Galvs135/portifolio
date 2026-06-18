@@ -1,5 +1,6 @@
 import AnimatedText from "../../components/ui/AnimatedText";
 import MagneticButton from "../../components/ui/MagneticButton";
+import SocialIcon from "../../components/ui/SocialIcon";
 import Parallax from "../../components/ui/Parallax";
 import { useTransition } from "../../components/Fullpage/Fullpage";
 import { EMAIL, socials } from "../../data/socials";
@@ -40,19 +41,22 @@ export default function Contact() {
         </div>
 
         <div data-vstep className={styles.socials}>
-          {socials.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noreferrer"
-              className={styles.social}
-              data-cursor="hover"
-            >
-              <span className={styles.socialLabel}>{s.label}</span>
-              <span className={styles.socialHandle}>{s.handle}</span>
-            </a>
-          ))}
+          {socials.map((s) => {
+            const external = s.href.startsWith("http");
+            return (
+              <MagneticButton
+                key={s.label}
+                href={s.href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noreferrer" : undefined}
+                className={styles.social}
+                aria-label={s.label}
+                strength={0.4}
+              >
+                <SocialIcon name={s.icon} />
+              </MagneticButton>
+            );
+          })}
         </div>
 
         <div className={styles.footer}>
