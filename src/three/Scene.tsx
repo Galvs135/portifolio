@@ -2,10 +2,11 @@ import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import HeroObject from "./HeroObject";
 
-export default function Scene() {
+export default function Scene({ paused = false }: { paused?: boolean }) {
   return (
     <div className="bg-canvas" aria-hidden="true">
       <Canvas
+        frameloop={paused ? "never" : "always"}
         dpr={[1, 1.5]}
         performance={{ min: 0.75 }}
         camera={{ position: [0, 0, 5], fov: 45 }}

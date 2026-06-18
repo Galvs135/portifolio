@@ -51,10 +51,18 @@ interface FullpageProps {
   panels: PanelDef[];
   loaded: boolean;
   menuOpen: boolean;
+  /** Fires with the active panel id whenever the page changes. */
+  onActiveChange?: (id: string) => void;
   children?: ReactNode; // navbar / menu rendered inside the provider
 }
 
-export default function Fullpage({ panels, loaded, menuOpen, children }: FullpageProps) {
+export default function Fullpage({
+  panels,
+  loaded,
+  menuOpen,
+  onActiveChange,
+  children,
+}: FullpageProps) {
   const [active, setActive] = useState(0);
 
   // Panel ids/kinds/length are stable; only the hero node changes with `loaded`.
@@ -78,6 +86,13 @@ export default function Fullpage({ panels, loaded, menuOpen, children }: Fullpag
   // Imperative navigation, stored in a ref so DOM handlers stay fresh.
   const goRef = useRef<(i: number) => void>(() => {});
   const navRef = useRef<(target: string | number) => void>(() => {});
+
+  // Notify the host (e.g. to pause the hero WebGL loop off the hero page).
+  const onActiveChangeRef = useRef(onActiveChange);
+  onActiveChangeRef.current = onActiveChange;
+  useEffect(() => {
+    onActiveChangeRef.current?.(panelsRef.current[active].id);
+  }, [active]);
 
   // Reset the panel that just became active (under the wipe cover).
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
+import { usePanel } from "../components/Fullpage/PanelContext";
 import { previewFragmentShader, previewVertexShader } from "./shaders";
 
 const isTouchDevice = () =>
@@ -34,7 +35,8 @@ function Plane({ colors, active }: PreviewProps) {
     []
   );
 
-  useFrame((_, dt) => {
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.033);
     const u = material.uniforms;
     u.uTime.value += dt;
     u.uHover.value = THREE.MathUtils.damp(u.uHover.value, active ? 1 : 0, 5, dt);
@@ -50,6 +52,9 @@ function Plane({ colors, active }: PreviewProps) {
 }
 
 export default function WorkPreview({ colors, active }: PreviewProps) {
+  const panel = usePanel();
+  const panelActive = panel?.active ?? true;
+
   // Mobile: skip Three.js entirely (saves WebGL context + GPU load).
   if (isTouchDevice()) {
     return (
@@ -67,6 +72,9 @@ export default function WorkPreview({ colors, active }: PreviewProps) {
 
   return (
     <Canvas
+      // The preview's per-pixel noise shader is costly; only run its render
+      // loop while the Work panel is on screen. Off-screen it idles at 0 fps.
+      frameloop={panelActive ? "always" : "never"}
       camera={{ position: [0, 0, 1.5], fov: 50 }}
       dpr={1}
       gl={{ antialias: false, powerPreference: "low-power" }}

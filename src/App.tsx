@@ -15,6 +15,7 @@ import Contact from "./sections/Contact/Contact";
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeId, setActiveId] = useState("hero");
 
   const handleLoaded = useCallback(() => setLoaded(true), []);
   const toggleMenu = useCallback(() => setMenuOpen((o) => !o), []);
@@ -36,9 +37,14 @@ export default function App() {
     <>
       <Cursor />
       <Preloader onComplete={handleLoaded} />
-      <Scene />
+      <Scene paused={activeId !== "hero"} />
 
-      <Fullpage panels={panels} loaded={loaded} menuOpen={menuOpen}>
+      <Fullpage
+        panels={panels}
+        loaded={loaded}
+        menuOpen={menuOpen}
+        onActiveChange={setActiveId}
+      >
         <Navbar open={menuOpen} onToggle={toggleMenu} />
         <Menu open={menuOpen} onClose={closeMenu} />
       </Fullpage>
