@@ -3,6 +3,9 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { previewFragmentShader, previewVertexShader } from "./shaders";
 
+const isTouchDevice = () =>
+  typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
 interface PreviewProps {
   colors: [string, string];
   active: boolean;
@@ -47,11 +50,26 @@ function Plane({ colors, active }: PreviewProps) {
 }
 
 export default function WorkPreview({ colors, active }: PreviewProps) {
+  // Mobile: skip Three.js entirely (saves WebGL context + GPU load).
+  if (isTouchDevice()) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          background: `linear-gradient(135deg, ${colors[0]} 0%, ${colors[1]} 100%)`,
+          transition: "opacity 0.5s",
+          opacity: active ? 0.9 : 0.6,
+        }}
+      />
+    );
+  }
+
   return (
     <Canvas
       camera={{ position: [0, 0, 1.5], fov: 50 }}
-      dpr={[1, 2]}
-      gl={{ antialias: true }}
+      dpr={1}
+      gl={{ antialias: false, powerPreference: "low-power" }}
       style={{ width: "100%", height: "100%" }}
     >
       <Plane colors={colors} active={active} />

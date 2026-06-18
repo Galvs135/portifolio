@@ -6,9 +6,10 @@ export default function Scene() {
   return (
     <div className="bg-canvas" aria-hidden="true">
       <Canvas
-        dpr={[1, 2]}
+        dpr={[1, 1.5]}
+        performance={{ min: 0.75 }}
         camera={{ position: [0, 0, 5], fov: 45 }}
-        gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
       >
         <color attach="background" args={["#121212"]} />
         <fog attach="fog" args={["#121212", 3.5, 9]} />

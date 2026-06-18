@@ -102,3 +102,41 @@
   letter-spacing: -0.03em;
   color: var(--color-fg-dim);
 }
+
+/* Horizontal scroll progress indicator */
+.progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(1.25rem, 3vw, 2.25rem);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+
+.progressCount {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.2em;
+  color: var(--color-fg-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.progressTrack {
+  position: relative;
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+
+.progressBar {
+  position: absolute;
+  inset: 0;
+  background: var(--color-fg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}

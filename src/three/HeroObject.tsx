@@ -36,8 +36,8 @@ export default function HeroObject() {
     });
   }, []);
 
-  // Detailed icosahedron => smooth organic displacement.
-  const geometry = useMemo(() => new THREE.IcosahedronGeometry(1.35, 64), []);
+  // Detail 32 = ~5k faces (still smooth) vs 64 = ~25k. Big perf win on mobile.
+  const geometry = useMemo(() => new THREE.IcosahedronGeometry(1.35, 32), []);
 
   useFrame((_, delta) => {
     const u = material.uniforms;

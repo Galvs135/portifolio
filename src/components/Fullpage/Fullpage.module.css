@@ -40,4 +40,5 @@
 .simple,
 .horizontal {
   overflow: hidden;
+  position: relative;
 }

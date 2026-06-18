@@ -135,7 +135,7 @@ export default function Fullpage({ panels, loaded, menuOpen, children }: Fullpag
       loadedRef.current &&
       !menuRef.current &&
       !animatingRef.current &&
-      performance.now() - lastStepRef.current > 90;
+      performance.now() - lastStepRef.current > 60;
 
     const stepHorizontal = (dir: number) => {
       const i = activeRef.current;
@@ -195,10 +195,12 @@ export default function Fullpage({ panels, loaded, menuOpen, children }: Fullpag
       advance(dir);
     };
 
+    let touchX = 0;
     let touchY = 0;
     let touchPanelScroll = true;
     const onTouchStart = (e: TouchEvent) => {
       touchY = e.touches[0]?.clientY ?? 0;
+      touchX = e.touches[0]?.clientX ?? 0;
       const i = activeRef.current;
       touchPanelScroll = panelsRef.current[i].kind === "scroll";
     };
@@ -208,14 +210,24 @@ export default function Fullpage({ panels, loaded, menuOpen, children }: Fullpag
     };
     const onTouchEnd = (e: TouchEvent) => {
       if (!loadedRef.current || menuRef.current) return;
-      const dy = touchY - (e.changedTouches[0]?.clientY ?? touchY);
-      if (Math.abs(dy) < 50) return;
-      const dir = dy > 0 ? 1 : -1;
       const i = activeRef.current;
-      const panel = panelRefs.current[i];
-      if (panelsRef.current[i].kind === "scroll" && panel && !atEdge(panel, dir)) return;
-      if (!ready()) return;
-      advance(dir);
+      const kind = panelsRef.current[i].kind;
+
+      if (kind === "horizontal") {
+        // Horizontal panels respond to left/right swipes.
+        const dx = touchX - (e.changedTouches[0]?.clientX ?? touchX);
+        if (Math.abs(dx) < 35) return;
+        if (!ready()) return;
+        advance(dx > 0 ? 1 : -1);
+      } else {
+        const dy = touchY - (e.changedTouches[0]?.clientY ?? touchY);
+        if (Math.abs(dy) < 35) return;
+        const dir = dy > 0 ? 1 : -1;
+        const panel = panelRefs.current[i];
+        if (kind === "scroll" && panel && !atEdge(panel, dir)) return;
+        if (!ready()) return;
+        advance(dir);
+      }
     };
 
     const onKey = (e: KeyboardEvent) => {

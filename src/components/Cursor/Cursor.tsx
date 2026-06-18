@@ -69,7 +69,7 @@ export default function Cursor() {
       const dx = mouse.x - lastX;
       const dy = mouse.y - lastY;
       const dist = Math.hypot(dx, dy);
-      const count = Math.min(6, Math.floor(dist / 4) + 1);
+      const count = Math.min(4, Math.floor(dist / 5) + 1);
       spawn(mouse.x, mouse.y, count);
       lastX = mouse.x;
       lastY = mouse.y;
