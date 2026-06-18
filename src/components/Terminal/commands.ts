@@ -30,12 +30,21 @@ export const commands: Record<string, Command> = {
   about: {
     description: "Who I am and what I do",
     lines: [
-      { text: "Lucas Galvão França — Software Engineer", tone: "accent" },
+      { text: "Lucas Galvão França — Data & AI Engineer", tone: "accent" },
       { text: "Belo Horizonte, Brazil", tone: "dim" },
       { text: "" },
-      { text: "4 years in the .NET (C#) ecosystem building scalable" },
-      { text: "backends, microservices and automation — idea to production." },
-      { text: "SOLID, Clean Architecture and DDD. MBA in AI & Automation.", tone: "dim" },
+      {
+        text: "Data & AI Engineer | .NET & Azure Specialist with 4+ years of experience designing and developing scalable data-driven and backend solutions using C#, .NET, Python, SQL, and cloud technologies. Experienced in building and optimizing data integration workflows, automation processes, RESTful APIs, microservices, and distributed systems in Azure and AWS environments. Strong background in CI/CD pipelines, cloud architecture, data processing, and integration of multiple data sources.",
+      },
+      { text: "" },
+      {
+        text: "Hands-on experience developing AI-powered solutions using RAG architectures, embeddings, NLP, and LLM integrations to improve operational efficiency and decision-making. Skilled in designing high-performance applications, implementing authentication and security standards (OAuth 2.0/OpenID Connect), and supporting data-centric solutions with focus on scalability, reliability, and maintainability.",
+      },
+      { text: "" },
+      {
+        text: "Proficient in Azure DevOps, Git, Docker, PostgreSQL, relational and NoSQL databases, Clean Architecture, SOLID principles, and agile methodologies. Comfortable collaborating with technical and non-technical stakeholders in cross-functional and international environments.",
+        tone: "dim",
+      },
     ],
   },
   contact: {

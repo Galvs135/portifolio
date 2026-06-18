@@ -34,28 +34,15 @@ function renderLines(lines: TermLine[]): ReactNode {
   ));
 }
 
+const RESUME_FILE = "Lucas_Galvao_Resume_English.pdf";
+
 function downloadResume() {
-  const cv = `Lucas Galvão França — Software Engineer
-Belo Horizonte, Brazil
-
-4 years in the .NET (C#) ecosystem building scalable backends,
-microservices and automation. SOLID, Clean Architecture and DDD.
-MBA in AI & Automation.
-
-email: lg_franca@hotmail.com
-github: https://github.com/galvs135
-linkedin: https://www.linkedin.com/in/lucas-g-franca
-
-(CV placeholder — replace with a real PDF later.)`;
-  const blob = new Blob([cv], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = "Lucas-Galvao-Franca-CV.txt";
+  a.href = `/${RESUME_FILE}`;
+  a.download = RESUME_FILE;
   document.body.appendChild(a);
   a.click();
   a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default function Terminal({
@@ -139,7 +126,7 @@ export default function Terminal({
         push(
           <div className={styles.line}>
             Downloading resume…{" "}
-            <span className={styles.dim}>(Lucas-Galvao-Franca-CV.txt)</span>
+            <span className={styles.dim}>({RESUME_FILE})</span>
           </div>
         );
         return;
@@ -159,10 +146,17 @@ export default function Terminal({
   );
   runRef.current = runCommand;
 
-  // Seed the banner once the console is shown; focus the input.
+  // Focus the input whenever the console is shown (boot, modal open, or
+  // switching back to full screen) so the user can type right away.
   useEffect(() => {
     if (!shown) return;
-    inputRef.current?.focus();
+    const id = requestAnimationFrame(() => inputRef.current?.focus());
+    return () => cancelAnimationFrame(id);
+  }, [view, modalOpen, shown]);
+
+  // Seed the banner once the console is shown.
+  useEffect(() => {
+    if (!shown) return;
     setHistory((h) =>
       h.length
         ? h
