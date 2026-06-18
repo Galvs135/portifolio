@@ -37,8 +37,10 @@
   height: 0;
 }
 
+/* .panel is already position:absolute, which anchors the progress bar — no
+   extra positioning needed here (relative would override absolute and break
+   the stacked-panel layout). */
 .simple,
 .horizontal {
   overflow: hidden;
-  position: relative;
 }
