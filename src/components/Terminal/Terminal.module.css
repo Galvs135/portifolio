@@ -1,0 +1,218 @@
+/* ---- Floating action button ---- */
+.fab {
+  position: fixed;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: clamp(1rem, 3vw, 2rem);
+  z-index: var(--z-terminal);
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--color-line);
+  background: rgba(18, 18, 18, 0.72);
+  backdrop-filter: blur(8px);
+  color: var(--color-fg);
+  transition: background 0.35s ease, color 0.35s ease, transform 0.35s ease,
+    border-color 0.35s ease;
+}
+.fab:hover {
+  background: var(--color-fg);
+  color: var(--color-bg);
+  border-color: var(--color-fg);
+  transform: translateY(-3px);
+}
+.fab svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ---- Modal ---- */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-terminal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(3px);
+  animation: fade 0.25s ease;
+}
+
+.window {
+  display: flex;
+  flex-direction: column;
+  width: min(720px, 92vw);
+  height: min(70vh, 560px);
+  background: #0c0c0c;
+  border: 1px solid var(--color-line);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  font-family: var(--font-mono);
+  animation: pop 0.3s var(--ease-out-expo);
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 38px;
+  padding: 0 0.5rem 0 0.9rem;
+  background: #161616;
+  border-bottom: 1px solid var(--color-line);
+  flex: 0 0 auto;
+}
+.title {
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--color-fg-dim);
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+.ctl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 26px;
+  font-size: 0.7rem;
+  color: var(--color-fg-dim);
+  border-radius: 3px;
+}
+.close {
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.close:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+/* ---- Output ---- */
+.body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0.9rem 1rem 1.1rem;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--color-fg);
+}
+.body::-webkit-scrollbar {
+  width: 8px;
+}
+.body::-webkit-scrollbar-thumb {
+  background: rgba(245, 245, 243, 0.18);
+  border-radius: 4px;
+}
+
+.entry {
+  margin-bottom: 0.6rem;
+}
+
+.promptLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.5rem;
+}
+.prompt {
+  color: #6ad19b;
+  white-space: nowrap;
+}
+.cmdEcho {
+  color: var(--color-fg);
+}
+
+.line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.dim {
+  color: var(--color-fg-dim);
+}
+.accent {
+  color: var(--color-fg);
+  font-weight: 600;
+}
+.error {
+  color: #ff6b6b;
+}
+
+/* clickable command names in help */
+.cmdChip {
+  font-family: var(--font-mono);
+  font-size: inherit;
+  color: #6ad19b;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+.cmdChip:hover {
+  color: var(--color-fg);
+}
+
+/* ---- Input line ---- */
+.inputLine {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: text;
+  min-height: 1.4em;
+}
+.inputText {
+  color: var(--color-fg);
+  white-space: pre;
+}
+.caret {
+  display: inline-block;
+  width: 8px;
+  height: 1.05em;
+  background: var(--color-fg);
+  animation: blink 1s step-end infinite;
+}
+.hiddenInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: transparent;
+  caret-color: transparent;
+  font: inherit;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}

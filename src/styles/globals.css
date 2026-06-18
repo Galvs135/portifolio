@@ -13,6 +13,8 @@
   /* Typography */
   --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", Consolas,
+    "Courier New", monospace;
 
   /* Fluid type scale */
   --fs-xs: 0.75rem;
@@ -45,6 +47,7 @@
   --z-content: 10;
   --z-menu: 70;
   --z-nav: 75;
+  --z-terminal: 78;
   --z-cursor: 80;
   --z-transition: 90;
   --z-preloader: 100;

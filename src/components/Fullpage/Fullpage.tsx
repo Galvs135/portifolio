@@ -51,6 +51,8 @@ interface FullpageProps {
   panels: PanelDef[];
   loaded: boolean;
   menuOpen: boolean;
+  /** When true, the controller ignores input (e.g. terminal overlay open). */
+  terminalOpen?: boolean;
   /** Fires with the active panel id whenever the page changes. */
   onActiveChange?: (id: string) => void;
   children?: ReactNode; // navbar / menu rendered inside the provider
@@ -60,6 +62,7 @@ export default function Fullpage({
   panels,
   loaded,
   menuOpen,
+  terminalOpen = false,
   onActiveChange,
   children,
 }: FullpageProps) {
@@ -80,8 +83,10 @@ export default function Fullpage({
   const lastStepRef = useRef(0);
   const loadedRef = useRef(loaded);
   const menuRef = useRef(menuOpen);
+  const terminalRef = useRef(terminalOpen);
   loadedRef.current = loaded;
   menuRef.current = menuOpen;
+  terminalRef.current = terminalOpen;
 
   // Imperative navigation, stored in a ref so DOM handlers stay fresh.
   const goRef = useRef<(i: number) => void>(() => {});
@@ -192,6 +197,9 @@ export default function Fullpage({
     };
 
     const onWheel = (e: WheelEvent) => {
+      // Terminal open: let wheel reach the terminal (its output scrolls
+      // natively); don't preventDefault or advance panels.
+      if (terminalRef.current) return;
       if (!loadedRef.current || menuRef.current) {
         e.preventDefault();
         return;
@@ -214,16 +222,19 @@ export default function Fullpage({
     let touchY = 0;
     let touchPanelScroll = true;
     const onTouchStart = (e: TouchEvent) => {
+      if (terminalRef.current) return;
       touchY = e.touches[0]?.clientY ?? 0;
       touchX = e.touches[0]?.clientX ?? 0;
       const i = activeRef.current;
       touchPanelScroll = panelsRef.current[i].kind === "scroll";
     };
     const onTouchMove = (e: TouchEvent) => {
+      if (terminalRef.current) return;
       // Let tall pages scroll natively; block elsewhere so we can step.
       if (!touchPanelScroll) e.preventDefault();
     };
     const onTouchEnd = (e: TouchEvent) => {
+      if (terminalRef.current) return;
       if (!loadedRef.current || menuRef.current) return;
       const i = activeRef.current;
       const kind = panelsRef.current[i].kind;
@@ -246,7 +257,7 @@ export default function Fullpage({
     };
 
     const onKey = (e: KeyboardEvent) => {
-      if (menuRef.current || !loadedRef.current) return;
+      if (terminalRef.current || menuRef.current || !loadedRef.current) return;
       const tag = (e.target as HTMLElement)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
       if (["ArrowDown", "PageDown", " ", "Spacebar"].includes(e.key)) {

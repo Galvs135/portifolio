@@ -5,6 +5,7 @@ import Preloader from "./components/Preloader/Preloader";
 import Fullpage, { type PanelDef } from "./components/Fullpage/Fullpage";
 import Navbar from "./components/Navbar/Navbar";
 import Menu from "./components/Menu/Menu";
+import Terminal from "./components/Terminal/Terminal";
 import Hero from "./sections/Hero/Hero";
 import About from "./sections/About/About";
 import Pillars from "./sections/Pillars/Pillars";
@@ -15,6 +16,7 @@ import Contact from "./sections/Contact/Contact";
 export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [terminalOpen, setTerminalOpen] = useState(false);
   const [activeId, setActiveId] = useState("hero");
 
   const handleLoaded = useCallback(() => setLoaded(true), []);
@@ -43,11 +45,14 @@ export default function App() {
         panels={panels}
         loaded={loaded}
         menuOpen={menuOpen}
+        terminalOpen={terminalOpen}
         onActiveChange={setActiveId}
       >
         <Navbar open={menuOpen} onToggle={toggleMenu} />
         <Menu open={menuOpen} onClose={closeMenu} />
       </Fullpage>
+
+      <Terminal open={terminalOpen} onOpenChange={setTerminalOpen} />
     </>
   );
 }
