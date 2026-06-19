@@ -17,6 +17,17 @@ export interface Project {
  */
 export const projects: Project[] = [
   {
+    id: "agent-whatsapp",
+    title: "Agent WhatsApp",
+    year: "2026",
+    role: "AI / Conversational",
+    description:
+      "An AI agent that answers on WhatsApp and Discord from a custom knowledge base — RAG retrieval and LLM responses wired straight into real messaging channels.",
+    stack: ["TypeScript", "RAG", "LLM", "WhatsApp API"],
+    href: "https://github.com/Galvs135/AgentWhatsapp",
+    colors: ["#1b2420", "#3f6b58"],
+  },
+  {
     id: "legacies",
     title: "Legacies",
     year: "2025",
@@ -48,6 +59,28 @@ export const projects: Project[] = [
     stack: ["n8n", "Telegram API", "Webhooks", "Automation"],
     href: "https://github.com/galvs135/n8n-chatbot-Telegram",
     colors: ["#22231d", "#5b6045"],
+  },
+  {
+    id: "app-encomendas",
+    title: "App Encomendas",
+    year: "2024",
+    role: "Backend / API",
+    description:
+      "Backend for a parcel-delivery app — a REST API modeling orders, couriers and delivery tracking on a clean .NET service layer.",
+    stack: ["C#", ".NET", "REST APIs", "SQL"],
+    href: "https://github.com/Galvs135/APP_ENCOMENDAS",
+    colors: ["#241f1a", "#6b5740"],
+  },
+  {
+    id: "central-fitness",
+    title: "Central Fitness",
+    year: "2022",
+    role: "Full-stack",
+    description:
+      "A full-stack fitness platform built as a coding-bootcamp capstone — workouts, training plans and member progress tracking. No pain, no gain.",
+    stack: ["TypeScript", "React", "Node.js", "REST APIs"],
+    href: "https://github.com/Galvs135/Central_Fitness_Capstone",
+    colors: ["#241a1d", "#6e4552"],
   },
   {
     id: "playground",

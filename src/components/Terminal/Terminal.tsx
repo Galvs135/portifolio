@@ -273,7 +273,12 @@ export default function Terminal({
   }, [history]);
 
   const consoleBody = (
-    <div className={styles.body} ref={outputRef}>
+    <div
+      className={styles.body}
+      ref={outputRef}
+      // Any click in the terminal area refocuses the input so the user can type.
+      onMouseDown={() => inputRef.current?.focus()}
+    >
       {history.map((e) => (
         <div key={e.id} className={styles.entry}>
           {e.input != null && (
