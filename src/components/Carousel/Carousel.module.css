@@ -1,0 +1,122 @@
+.deck {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Cards layer. Transparent + pointer-events:none so taps fall through to the
+   click zones; only the centred card re-enables pointer events (inline). */
+.stage {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  perspective: 1600px;
+}
+
+.card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  transition: transform 0.6s var(--ease-out-expo), opacity 0.5s ease;
+}
+
+/* Left / right click zones sit behind the cards. Clicking the right half
+   advances, the left half goes back; they hide at the ends (clamp). */
+.zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--color-fg-dim);
+}
+.zoneLeft {
+  left: 0;
+  justify-content: flex-start;
+  padding-left: clamp(1rem, 3vw, 2.5rem);
+}
+.zoneRight {
+  right: 0;
+  justify-content: flex-end;
+  padding-right: clamp(1rem, 3vw, 2.5rem);
+}
+.zone:disabled {
+  cursor: default;
+}
+
+.chevron {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  opacity: 0.35;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.zone:hover .chevron {
+  opacity: 0.9;
+}
+.zone:disabled .chevron {
+  opacity: 0;
+}
+.zoneLeft:hover .chevron {
+  transform: translateX(-5px);
+}
+.zoneRight:hover .chevron {
+  transform: translateX(5px);
+}
+
+/* Section heading, parked top-left and out of the way. */
+.intro {
+  position: absolute;
+  left: var(--gutter);
+  top: clamp(4.5rem, 13vh, 8.5rem);
+  z-index: 6;
+  max-width: min(70vw, 26rem);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+/* Progress indicator. */
+.progress {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: clamp(1.25rem, 3vw, 2.25rem);
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  pointer-events: none;
+}
+.progressCount {
+  font-size: var(--fs-xs);
+  letter-spacing: 0.2em;
+  color: var(--color-fg-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.progressTrack {
+  position: relative;
+  flex: 1 1 auto;
+  height: 1px;
+  background: var(--color-line);
+  overflow: hidden;
+}
+.progressBar {
+  position: absolute;
+  inset: 0;
+  background: var(--color-fg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease-out-expo);
+  will-change: transform;
+}

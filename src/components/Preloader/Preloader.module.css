@@ -20,7 +20,7 @@
   will-change: transform;
 }
 .col:nth-child(even) {
-  background: #161616;
+  background: var(--color-bg-soft);
 }
 
 .content {

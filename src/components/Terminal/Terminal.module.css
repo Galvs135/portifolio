@@ -1,4 +1,5 @@
-/* ---- Floating action button ---- */
+/* ---- Floating action button (shared by the site's "open terminal" button
+   and the terminal's "open portfolio" button) ---- */
 .fab {
   position: fixed;
   right: clamp(1rem, 3vw, 2rem);
@@ -10,16 +11,16 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1px solid var(--color-line);
-  background: rgba(20, 20, 20, 0.92);
-  color: var(--color-fg);
+  border: 1px solid var(--color-terminal-line);
+  background: var(--color-terminal-titlebar);
+  color: var(--color-terminal-fg);
   transition: background 0.35s ease, color 0.35s ease, transform 0.35s ease,
     border-color 0.35s ease;
 }
 .fab:hover {
-  background: var(--color-fg);
-  color: var(--color-bg);
-  border-color: var(--color-fg);
+  background: var(--color-terminal-fg);
+  color: var(--color-terminal-bg);
+  border-color: var(--color-terminal-fg);
   transform: translateY(-3px);
 }
 .fab svg {
@@ -47,7 +48,7 @@
   position: fixed;
   inset: 0;
   z-index: var(--z-terminal);
-  background: #0c0c0c;
+  background: var(--color-terminal-bg);
   display: flex;
   flex-direction: column;
   font-family: var(--font-mono);
@@ -62,8 +63,8 @@
   flex-direction: column;
   width: min(720px, 92vw);
   height: min(70vh, 560px);
-  background: #0c0c0c;
-  border: 1px solid var(--color-line);
+  background: var(--color-terminal-bg);
+  border: 1px solid var(--color-terminal-line);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
@@ -77,14 +78,14 @@
   justify-content: space-between;
   height: 38px;
   padding: 0 0.5rem 0 0.9rem;
-  background: #161616;
-  border-bottom: 1px solid var(--color-line);
+  background: var(--color-terminal-titlebar);
+  border-bottom: 1px solid var(--color-terminal-line);
   flex: 0 0 auto;
 }
 .title {
   font-size: 0.78rem;
   letter-spacing: 0.04em;
-  color: var(--color-fg-dim);
+  color: var(--color-terminal-fg-dim);
 }
 .controls {
   display: flex;
@@ -98,7 +99,7 @@
   width: 34px;
   height: 26px;
   font-size: 0.7rem;
-  color: var(--color-fg-dim);
+  color: var(--color-terminal-fg-dim);
   border-radius: 3px;
 }
 .close {
@@ -117,13 +118,13 @@
   padding: 0.9rem 1rem 1.1rem;
   font-size: 0.84rem;
   line-height: 1.55;
-  color: var(--color-fg);
+  color: var(--color-terminal-fg);
 }
 .body::-webkit-scrollbar {
   width: 8px;
 }
 .body::-webkit-scrollbar-thumb {
-  background: rgba(245, 245, 243, 0.18);
+  background: var(--color-terminal-scroll);
   border-radius: 4px;
 }
 
@@ -137,11 +138,11 @@
   gap: 0 0.5rem;
 }
 .prompt {
-  color: #6ad19b;
+  color: var(--color-terminal-prompt);
   white-space: nowrap;
 }
 .cmdEcho {
-  color: var(--color-fg);
+  color: var(--color-terminal-fg);
 }
 
 .line {
@@ -149,21 +150,30 @@
   word-break: break-word;
 }
 .dim {
-  color: var(--color-fg-dim);
+  color: var(--color-terminal-fg-dim);
 }
 .accent {
-  color: var(--color-fg);
+  color: var(--color-terminal-fg);
   font-weight: 600;
 }
 .error {
-  color: #ff6b6b;
+  color: var(--color-terminal-error);
 }
 
-/* clickable command names in help */
+/* directory listing rows */
+.dirGroup {
+  margin-top: 0.2rem;
+}
+.dirTag {
+  color: var(--color-terminal-fg-dim);
+  margin-right: 0.6rem;
+}
+
+/* clickable command names in dir / help */
 .cmdChip {
   font-family: var(--font-mono);
   font-size: inherit;
-  color: #6ad19b;
+  color: var(--color-terminal-prompt);
   background: none;
   border: none;
   padding: 0;
@@ -174,7 +184,7 @@
   transition: color 0.2s ease;
 }
 .cmdChip:hover {
-  color: var(--color-fg);
+  color: var(--color-terminal-fg);
 }
 
 /* ---- Input line ---- */
@@ -187,14 +197,14 @@
   min-height: 1.4em;
 }
 .inputText {
-  color: var(--color-fg);
+  color: var(--color-terminal-fg);
   white-space: pre;
 }
 .caret {
   display: inline-block;
   width: 8px;
   height: 1.05em;
-  background: var(--color-fg);
+  background: var(--color-terminal-fg);
   animation: blink 1s step-end infinite;
 }
 .hiddenInput {

@@ -8,7 +8,7 @@ export interface TermLine {
   tone?: Tone;
 }
 
-export type CommandAction = "clear" | "exit" | "resume" | "site" | "terminal";
+export type CommandAction = "clear" | "exit" | "resume" | "terminal";
 
 export interface Command {
   description: string;
@@ -97,10 +97,6 @@ export const commands: Record<string, Command> = {
       { text: "Data        PostgreSQL · MongoDB · Observability" },
       { text: "Practices   SOLID · Clean Code · CI/CD · Scrum" },
     ],
-  },
-  site: {
-    description: "Load the full portfolio site",
-    action: "site",
   },
   terminal: {
     description: "Back to the full-screen terminal",

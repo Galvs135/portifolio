@@ -49,7 +49,7 @@
   line-height: 0.8;
   letter-spacing: -0.04em;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(245, 245, 243, 0.12);
+  -webkit-text-stroke: 1px var(--color-line);
   pointer-events: none;
   z-index: 0;
   will-change: transform;

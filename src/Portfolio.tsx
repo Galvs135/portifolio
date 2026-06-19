@@ -35,8 +35,8 @@ export default function Portfolio({ terminalOpen = false }: PortfolioProps) {
       { id: "hero", kind: "simple", transparent: true, node: <Hero loaded={loaded} /> },
       { id: "about", kind: "scroll", node: <About /> },
       { id: "pillars", kind: "scroll", node: <Pillars /> },
-      { id: "work", kind: "horizontal", node: <Work /> },
-      { id: "skills", kind: "horizontal", node: <Skills /> },
+      { id: "work", kind: "simple", node: <Work /> },
+      { id: "skills", kind: "simple", node: <Skills /> },
       { id: "contact", kind: "scroll", node: <Contact /> },
     ],
     [loaded]
